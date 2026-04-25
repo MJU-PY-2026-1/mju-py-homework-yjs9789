@@ -8,15 +8,15 @@ for i in range(len(mon_exercises)):
     if sets<=0 :
         break
     
-    total=0
+    volume=0
     for n in range(1, sets+1):
         weight=float(input('무게:'))
         num=int(input('횟수:'))
         if num <= 0 or weight <=0:
             break
-        total+=weight*num
+        volume+=weight*num
 
-    exercises_volume.append([exercise, total])
+    exercises_volume.append([exercise, volume])
 print(f"{exercises_volume=}")
 
 #신체정보
