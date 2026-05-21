@@ -5,22 +5,25 @@ current_calories=0
 def record_diet():
     global current_calories
     target_calories=2500
-    calories=float(input('섭취한 칼로리:'))
+    calories=float(input('\n섭취한 칼로리:'))
     current_calories+=calories
 
-    print(f'\n현재 총 섭취량:{current_calories} / {target_calories}kal')
+    print(f'현재 총 섭취량:{current_calories} / {target_calories}kal')
 
 
 
 def cal_exercises_volume():
-    total_volume=0
-    sets=int(input('세트 수:'))
+    total_volume=0  
+    sets=int(input('세트 수'))
+
     if sets<=0 :
         return 0            
-    for _ in range(1, sets+1):
-        weight=float(input('무게:'))
-        num=int(input('횟수:'))  
-        if weight <= 0 or num<=0:
+    for i in range(1, sets+1):
+        weight_num=input(f'{i}세트의 무게와 횟수를 띄어쓰기로 입력 ').split()
+        
+        weight=float(weight_num[0])
+        num=int(weight_num[1])
+        if weight<=0 or num<=0:
             break
         total_volume+= weight*num
     return total_volume
@@ -60,12 +63,14 @@ while True:
         mon_exercises=[1,2]
 
         exercises_volume=[] 
-        for i in range(len(mon_exercises)):
-            exercise=input("\n종목:")
+        for i in range(len(mon_exercises)): 
+            exercise=input('\n운동 종목:')      
             volume=cal_exercises_volume()
             exercises_volume.append([exercise, volume])
+        
+        print()
         for n in exercises_volume:
-            print(f'\n{n[0]}, {n[1]}')
+            print(f'{n[0]}, {n[1]}')
 
     
     elif menu=='3' :
