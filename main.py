@@ -2,6 +2,8 @@
 
 current_calories=0
 exercises_volume=[] 
+routine_list={'월': ['벤치프레스', '인클라인 벤치프레스', '딥스'], '화':['바벨로우', '랫풀다운', '턱걸이'], 
+              '수': ['바벨컬', '트라이셉스 익스텐션', '해머컬', '케이블 푸시다운'], '목': ['스쿼트', '레그프레스']}
 
 def record_diet():
     global current_calories
@@ -12,28 +14,33 @@ def record_diet():
         current_calories+=calories
         print(f'현재 총 섭취량:{current_calories} / {target_calories}kal')
     except ValueError:
-        print('칼로리를 숫자로 입력')
+        print('\n칼로리는 숫자로 입력')
 
 
 
 def cal_exercises_volume():
-    total_volume=0  
-
+    volume=0
+    sets=0 
+  
     try:
-        exercise, sets=input('\n운동 종목과 세트 수 띄어쓰기로 입력:').split()          
-        
-        for i in range(1, sets+1):
-            weight,num=input(f'{i}세트의 무게와 횟수를 띄어쓰기로 입력 ').split()
+            exercise= routine_list[day][i]
+            sets=input(f'\n{exercise}의 세트 수 입력:')          
+            sets= int(sets)
             
-            weight=float(weight)
-            num=int(num)
-            if weight<=0 or num<=0:
-                break
-            total_volume+= weight*num
+            for n in range(1, sets+1):
+                weight,num=input(f'{n}세트의 무게와 횟수를 띄어쓰기로 입력 ').split()
+                    
+                weight=float(weight)
+                num=int(num)
+                if weight<=0 or num<=0:
+                    break
+                volume+= weight*num
     except ValueError:
-        print('세트 수, 무게, 횟수를 숫자로 입력')
-    return exercise, sets, total_volume
-        
+        print('\n세트 수, 무게, 횟수를 숫자로 입력')
+    return exercise, sets, volume
+
+
+
 
 def cal_bmi (bodyheight_cm, bodyweight):
         bodyheight_m = bodyheight_cm /100
@@ -46,8 +53,34 @@ def cal_bmi (bodyheight_cm, bodyweight):
             my_bmi='과체중'
         else: 
             my_bmi='비만'
-        
         return bmi, my_bmi
+
+
+
+
+
+def routine():
+    day=input('오늘의 요일 입력:')
+    if day in routine_list:
+        print(f'{day}    {routine_list[day]}')
+    else:
+        print('해당 요일이 없습니다')
+
+
+
+
+        
+def save_exercises():
+        
+    print('\n----------------------------------------------------------------')
+    print(f'\n운동종목    |     세트수     |     볼륨     ')
+    for info in exercises_volume:
+        print(f'\n{info[0]}     |     {info[1]}     |     {info[2]}     ')
+    print('\n----------------------------------------------------------------')
+
+    with open('exercises_record.txt', 'w', encoding='utf-8')as file:
+        for info in exercises_volume:
+            file.write(f'\n {info[0]}     |     {info[1]}     |     {info[2]}     ')
 
 
 while True:
@@ -66,12 +99,15 @@ while True:
 
         
     elif menu=='2':
-        mon_exercises=[1,2]
+        day=input('오늘의 요일 입력:')
+        if day in routine_list:
+            for i in range(len(routine_list[day])):
+                exercise, sets, volume=cal_exercises_volume()
+                exercises_volume.append([exercise, sets, volume])
+        else:
+            print('해당 요일이 없습니다')
 
-        for i in range(len(mon_exercises)): 
-                  
-            exercise, sets,volume=cal_exercises_volume()
-            exercises_volume.append([exercise, sets, volume])
+        
 
     
     elif menu=='3' :
@@ -80,26 +116,27 @@ while True:
             bodyweight=float(input('몸무게를 입력하시오:'))
             bmi, my_bmi= cal_bmi(bodyheight_cm, bodyweight)
         except ValueError:
-            print('키와 몸무게를 숫자로 입력')
+            print('\n키와 몸무게를 숫자로 입력')
         print(f'\nbmi={bmi: .2f}, {my_bmi}입니다')
 
 
-    elif menu=='5':
-        
-        print('\n---------------------------------------------------------------------')
-        for row in exercises_volume:
-            for column in row:
-                print(f'\n{column[0]}   |   {column[1]}   |   {column[2]}   ')
-        print('\n---------------------------------------------------------------------')
+    elif menu=='4':
+        routine()
 
-        with open('exercises_record', 'w', encoding='ust-8')as file:
-            for row in exercises_volume:
-                for column in row:
-                    file.write(f'\n{column[0]}   |   {column[1]}   |   {column[2]}   ')
+
+
+    elif menu=='5':
+        if not exercises_volume:
+            print('운동기록 데이터가 없습니다')
+            continue
+        save_exercises()
+    
+    
     
     elif menu=='6':
         print('종료')
         break
 
+    
     else:
         print('1~6선택')
